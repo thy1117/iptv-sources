@@ -1,8 +1,7 @@
 name: docker image
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   buildx:
@@ -24,4 +23,3 @@ jobs:
       - name: Build image
         run: |
           docker buildx build -t herberthe0229/iptv-sources:latest --platform=linux/arm64,linux/amd64,linux/arm/v8,linux/arm/v7 . --push
-
