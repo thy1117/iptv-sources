@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 65
     permissions:
       contents: read
 
@@ -33,6 +34,12 @@ jobs:
           pnpm build
           pnpm m3u
           pnpm static
+      - name: Install video inspector
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Verify strict 1080p domestic streams
+        run: |
+          python3 scripts/test-filter-1080p.py
+          python3 scripts/filter-1080p.py
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
