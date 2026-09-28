@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cp -r ./m3u ./back && yarn m3u && rm -rf ./back
+cp -r ./m3u ./back && pnpm m3u && rm -rf ./back

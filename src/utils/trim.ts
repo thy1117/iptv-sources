@@ -1,33 +1,17 @@
-export const trimAny = (any: any) => {
-    if (Array.isArray(any)) {
-        return any.map((a: any) => {
-            if (typeof a === "string") {
-                return a.trim()
-            }
+export const trimAny = <T>(value: T): T => {
+  if (Array.isArray(value)) {
+    return value.map((item) => trimAny(item)) as T;
+  }
 
-            if (typeof a === "object") {
-                return trimAny(a)
-            }
-        })
-    }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, trimAny(item)])
+    ) as T;
+  }
 
-    if (typeof any === "object") {
-        return Object.fromEntries(
-            Object.entries(any).map(([key, value]) => {
-                if (typeof value === "string") {
-                    return [key, value.trim()]
-                }
+  if (typeof value === 'string') {
+    return value.trim() as T;
+  }
 
-                if (typeof value === "object") {
-                    return [key, trimAny(value)]
-                }
-            })
-        )
-    }
-
-    if (typeof any === "string") {
-        return any.trim()
-    }
-
-    return any
-}
+  return value;
+};

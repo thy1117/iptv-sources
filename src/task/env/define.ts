@@ -1,31 +1,31 @@
 export interface IEnvSourcesProxyGitHubRawContent {
-    close?: boolean
-    custom?: string
+  close?: boolean;
+  custom?: string;
 }
 
 export interface IEnvSourcesProxy {
-    github_raw_content?: IEnvSourcesProxyGitHubRawContent
+  github_raw_content?: IEnvSourcesProxyGitHubRawContent;
 }
 
 export interface IEnvSourcesRollback {
-    urls?: string[]
+  urls?: string[];
 }
 
 export interface IEnvSources {
-    rollback?: IEnvSourcesRollback
-    proxy?: IEnvSourcesProxy
+  rollback?: IEnvSourcesRollback;
+  proxy?: IEnvSourcesProxy;
 }
 
 export interface IEnvExtendsIPTVChecker {
-    enable?: boolean
-    url?: string
+  enable?: boolean;
+  url?: string;
 }
 
 export interface IEnvExtends {
-    iptv_checker?: IEnvExtendsIPTVChecker
+  iptv_checker?: IEnvExtendsIPTVChecker;
 }
 
 export interface IEnv {
-    sources?: IEnvSources
-    extends?: IEnvExtends
+  sources?: IEnvSources;
+  extends?: IEnvExtends;
 }

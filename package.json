@@ -2,24 +2,29 @@
   "name": "iptv-sources",
   "version": "1.6.6",
   "main": "index.js",
-  "repository": "git@github.com:HerbertHe/iptv-sources.git",
-  "author": "HerbertHe <Herbert.He0229@gmail.com>",
+  "repository": "https://github.com/whyun-pages/iptv-sources.git",
+  "author": "yunnysunny <yunnysunny@gmail.com>",
   "type": "module",
   "license": "GPL-3.0-only",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsup --watch",
     "build": "tsup",
+    "build:static": "tsx src/index.ts",
+    "postbuild:static": "npm run static",
     "m3u": "node ./dist/index.js",
+    "postm3u": "npm run static",
+    "static": "cp -r public/* m3u/",
     "serve": "node ./dist/serve.js",
     "serve:dev": "nodemon ./dist/serve.js",
-    "matrix": "node ./dist/matrix.js",
     "release": "node ./scripts/release.js",
-    "docker:build": "docker buildx build -t herberthe0229/iptv-sources:latest --platform=linux/arm64,linux/amd64,linux/arm/v8,linux/arm/v7 . --push",
-    "docker:build:dev": "docker buildx build -t herberthe0229/iptv-sources:dev --platform=linux/arm64,linux/amd64,linux/arm/v8,linux/arm/v7 . --push",
-    "docker:build:local": "docker buildx build -t herberthe0229/iptv-sources:dev --platform=linux/arm64,linux/amd64,linux/arm/v8,linux/arm/v7 .",
-    "push": "yarn release && git push && yarn docker:build"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@rollup/wasm-node": "4.20.0",
     "@types/koa": "^2.15.0",
     "@types/koa-router": "^7.4.8",
@@ -27,20 +32,30 @@
     "@types/markdown-it": "14.1.2",
     "@types/node": "22.2.0",
     "@types/opencc-js": "1.0.3",
+    "@types/xml2js": "^0.4.14",
+    "@vitest/coverage-v8": "^2.1.0",
     "cross-env": "^7.0.3",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.0",
+    "eslint-plugin-vitest": "^0.5.0",
+    "globals": "^15.12.0",
     "nodemon": "^3.1.4",
+    "prettier": "^3.3.0",
     "tsup": "8.2.4",
-    "typescript": "5.5.4"
+    "tsx": "^4.21.0",
+    "typescript": "5.5.4",
+    "typescript-eslint": "^8.15.0",
+    "vitest": "^2.1.0"
   },
   "dependencies": {
+    "@whyun/tv-tools": "^0.1.4",
     "dotenv": "^16.4.5",
     "koa": "2.15.3",
     "koa-router": "12.0.1",
     "koa-static": "5.0.0",
     "markdown-it": "14.1.0",
-    "opencc-js": "1.0.5"
-  },
-  "resolutions": {
-    "rollup": "npm:@rollup/wasm-node"
+    "opencc-js": "1.0.5",
+    "xml2js": "^0.6.2"
   }
 }

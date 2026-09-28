@@ -1,3 +1,3 @@
 #!/bin/sh
 
-yarn install && yarn build && yarn m3u && yarn serve
+pnpm install && pnpm build && pnpm m3u && pnpm serve

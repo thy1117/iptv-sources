@@ -1,81 +1,62 @@
-import "dotenv/config"
+import 'dotenv/config';
 
-interface IREADMEMirrorSite {
-    protocol: "http" | "https"
-    url: string
-    frequence: string
-    idc: string
-    provider: string
+const DEFAULT_CUSTOM_URL = 'https://m3u.ibert.me';
+
+function stripTrailingSlashes(s: string): string {
+  return s.replace(/\/+$/, '');
 }
 
-type TREADMEMirrorSitesMatrix = IREADMEMirrorSite[]
+/** Cloudflare Pages 预览域 branch.project.pages.dev 规范为生产根 https://project.pages.dev */
+function resolveCustomBaseUrl(input: string): string {
+  const trimmed = input.trim();
+  let url: URL;
+  try {
+    url = new URL(trimmed);
+  } catch {
+    return stripTrailingSlashes(trimmed);
+  }
 
-export const sites_matrix: TREADMEMirrorSitesMatrix = [
-    {
-        protocol: "https",
-        url: "https://iptv.b2og.com",
-        frequence: "per 2h",
-        idc: "腾讯云",
-        provider: "[GrandDuke1106](https://github.com/GrandDuke1106)",
-    },
-    {
-        protocol: "https",
-        url: "https://iptv.helima.net",
-        frequence: "per 2.5h",
-        idc: "Oracle",
-        provider: "[DobySAMA](https://github.com/DobySAMA)",
-    },
-    {
-        protocol: "https",
-        url: "https://m3u.002397.xyz",
-        frequence: "per 2h",
-        idc: "CloudFlare Tunnel",
-        provider: "[Eternal-Future](https://github.com/Eternal-Future)",
-    },
-    {
-        protocol: "https",
-        url: "https://iptv.002397.xyz",
-        frequence: "per 2h",
-        idc: "Amazon",
-        provider: "[Eternal-Future](https://github.com/Eternal-Future)",
-    },
-]
-export const get_custom_url = () =>
-    !!process.env.CUSTOM_URL ? process.env.CUSTOM_URL : "https://m3u.ibert.me"
+  const labels = url.hostname.split('.');
+  const isPagesDev =
+    labels.length >= 2 &&
+    labels[labels.length - 2] === 'pages' &&
+    labels[labels.length - 1] === 'dev';
 
-export const get_rollback_urls = () => {
-    const matrix_url = sites_matrix.map((m) => m.url)
+  if (isPagesDev && labels.length === 4) {
+    const project = labels[1];
+    return stripTrailingSlashes(`https://${project}.pages.dev`);
+  }
 
-    if (!process.env.ROLLBACK_URLS) {
-        return ["https://m3u.ibert.me", ...matrix_url]
-    }
-
-    return process.env.ROLLBACK_URLS.split(",")
-        .map((url) => url.trim())
-        .concat(["https://m3u.ibert.me", ...matrix_url])
+  return stripTrailingSlashes(url.href);
 }
+
+export const get_custom_url = (): string => {
+  const raw =
+    process.env.CUSTOM_URL?.trim() || process.env.CF_PAGES_URL?.trim() || DEFAULT_CUSTOM_URL;
+  return resolveCustomBaseUrl(raw);
+};
 
 export const get_github_raw_proxy_url = () => {
-    const custom = process.env.CUSTOM_GITHUB_RAW_SOURCE_PROXY_URL
-    return !!custom ? custom : `https://ghfast.top`
-}
+  const custom = process.env.CUSTOM_GITHUB_RAW_SOURCE_PROXY_URL;
+  return custom ? custom : `https://ghfast.top`;
+};
 
 export const replace_github_raw_proxy_url = (s: string) => {
-    const proxy_url = get_github_raw_proxy_url()
-    return s.replace(
-        /tvg\-logo="https:\/\/raw\.githubusercontent\.com\//g,
-        `tvg-logo="${proxy_url}/https://raw.githubusercontent.com/`
-    )
-}
+  const proxy_url = get_github_raw_proxy_url();
+  return s.replace(
+    /tvg-logo="https:\/\/raw\.githubusercontent\.com\//g,
+    `tvg-logo="${proxy_url}/https://raw.githubusercontent.com/`
+  );
+};
 
 export const is_filted_channels = (s: string) => {
-    if (s.includes("ABN")) {
-        return true
-    }
-    
-    if (s.includes("NTD")) {
-        return true
-    }
+  if (s.includes('ABN')) {
+    return true;
+  }
 
-    return false
-}
+  if (s.includes('NTD')) {
+    return true;
+  }
+
+  return false;
+};
