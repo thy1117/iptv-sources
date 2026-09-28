@@ -34,7 +34,7 @@ def probe(url):
 def main():
     entries = {}
     # Domestic lists only: global all.m3u is deliberately excluded.
-    for name in ('hotel_tvn', 'cn', 'youhun'):
+    for name in ('hotel_tvn', 'cn'):
         file = ROOT / (name + '.m3u')
         if not file.exists():
             continue
@@ -64,7 +64,7 @@ def main():
     (ROOT / '1080p.m3u').write_text('\n'.join(playlist) + '\n')
     report = {'checked_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'tested': len(results), 'accepted': len(accepted),
-              'scope': 'hotel_tvn,cn,youhun; two short decoding samples, not a long-term guarantee',
+              'scope': 'hotel_tvn,cn; two short decoding samples, not a long-term guarantee',
               'results': results}
     (ROOT / '1080p-report.json').write_text(json.dumps(report, ensure_ascii=False))
     print(f"1080p result: {len(accepted)}/{len(results)}")
